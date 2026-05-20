@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NghiaNH12 | FRT AI Agent Chain</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f1f5f9;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        .section-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease-in-out;
+        }
+        .section-card:hover {
+            border-color: #38bdf8;
+        }
+        .toc-link.active {
+            color: #38bdf8;
+            border-left-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.08);
+        }
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="min-h-screen p-6 md:p-12">
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4 leading-tight">
+                <span class="block">Hi, I'm NghiaNH12</span>
+                <span class="block">I'd love to join the <span class="text-sky-400">FRT AI Agent Chain</span></span>
+            </h1>
+            <div class="h-1 w-24 bg-sky-500 rounded"></div>
+        </header>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+            <aside class="lg:w-64 lg:shrink-0 lg:order-last">
+                <nav class="lg:sticky lg:top-6 section-card p-5 rounded-xl">
+                    <h2 class="text-xs uppercase tracking-wider text-slate-500 font-semibold mb-3">On this page</h2>
+                    <ul class="space-y-2 text-sm">
+                        <li>
+                            <a href="#problem" class="toc-link block text-slate-300 hover:text-sky-400 transition-colors border-l-2 border-slate-700 hover:border-sky-500 pl-3 py-1">
+                                AI Agents problem at FRT
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#why" class="toc-link block text-slate-300 hover:text-sky-400 transition-colors border-l-2 border-slate-700 hover:border-sky-500 pl-3 py-1">
+                                Why I want to join
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#built" class="toc-link block text-slate-300 hover:text-sky-400 transition-colors border-l-2 border-slate-700 hover:border-sky-500 pl-3 py-1">
+                                AI stuff I built recently
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <main class="space-y-8 flex-1 min-w-0">
+            <section id="problem" class="section-card p-6 rounded-xl scroll-mt-6">
+                <h2 class="text-2xl font-bold text-sky-400 mb-4">AI Agents problem at FRT that I deeply care</h2>
+                <div class="text-slate-300 space-y-6 leading-relaxed">
+
+                    <div>
+                        <h3 class="text-white font-semibold text-lg mb-2">The problem</h3>
+                        <p>
+                            Today, AI tools at FRT are still mostly one-off chatbots or isolated copilots.
+                            The bigger opportunity I keep coming back to is this:
+                            <strong class="text-white">every single person at FRT — from back-office staff to
+                            store sales associates — should have their own "agent assistant team"</strong>
+                            quietly working alongside them. Not a single mega-bot, but a small crew of
+                            role-aware agents that knows that person's job, their tools, and their daily flow.
+                        </p>
+                        <p class="mt-3">
+                            Without that, productivity gains stay siloed in a few power-users. With it, AI
+                            stops being a feature and becomes a layer of the company.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 class="text-white font-semibold text-lg mb-2">My approach</h3>
+                        <p>
+                            Build a <strong class="text-white">reliable, templated agent team</strong> — one
+                            standard architecture that can be quickly deployed and widely adapted across
+                            departments, instead of a custom build for every team.
+                        </p>
+                        <ul class="list-disc list-outside ml-6 mt-3 space-y-2">
+                            <li>
+                                <span class="text-sky-300 font-medium">Reusable core:</span>
+                                a coordinator agent (like <em>Marvin</em> in my current build) plus a library
+                                of specialist agents (research, drafting, ticket-ops, reporting, etc.).
+                            </li>
+                            <li>
+                                <span class="text-sky-300 font-medium">Role kits:</span>
+                                each department (sales, finance, HR, supply chain…) gets a pre-tuned bundle
+                                of skills, prompts, and integrations — not a blank canvas.
+                            </li>
+                            <li>
+                                <span class="text-sky-300 font-medium">Skills as the unit of behavior:</span>
+                                every action an agent takes lives in an inspectable skill, so business owners
+                                can read, edit, and approve what their agents are allowed to do.
+                            </li>
+                            <li>
+                                <span class="text-sky-300 font-medium">Safe-by-default ops:</span>
+                                human-in-the-loop checkpoints, audit logs, and rollback — so we can deploy
+                                widely without losing control.
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-white font-semibold text-lg mb-2">The core idea: treat agents like hires</h3>
+                        <p>
+                            The mental model I most believe in:
+                            <strong class="text-white">agents are not tools, they are new hires.</strong>
+                            They should go through a real, end-to-end onboarding — the same way any of us
+                            would when we join a new team — so they understand how we actually do the work
+                            before they're asked to help.
+                        </p>
+                        <p class="mt-3">Concretely, an agent's onboarding would include:</p>
+                        <ul class="list-disc list-outside ml-6 mt-2 space-y-2">
+                            <li>
+                                <span class="text-sky-300 font-medium">Read the playbook:</span>
+                                ingest the team's SOPs, glossaries, internal docs, and recent decisions —
+                                not just public knowledge.
+                            </li>
+                            <li>
+                                <span class="text-sky-300 font-medium">Shadow real work:</span>
+                                observe live tickets, emails, meeting notes, and customer interactions
+                                (read-only) to learn what "good" looks like in context.
+                            </li>
+                            <li>
+                                <span class="text-sky-300 font-medium">Pair with a buddy:</span>
+                                a human mentor reviews and corrects the agent's draft actions during a
+                                probation period — same as onboarding a junior teammate.
+                            </li>
+                            <li>
+                                <span class="text-sky-300 font-medium">Graduate by evaluation:</span>
+                                the agent only unlocks autonomous actions after passing a measurable
+                                rubric (accuracy, safety, tone), per skill.
+                            </li>
+                            <li>
+                                <span class="text-sky-300 font-medium">Continuous review:</span>
+                                regular "performance reviews" — metrics, user feedback, drift checks —
+                                with the option to retrain or retire skills, just like managing a real teammate.
+                            </li>
+                        </ul>
+                        <p class="mt-4">
+                            If we get this right, every employee at FRT walks into work with a small,
+                            trusted team that already knows their job — and the whole company compounds
+                            from there.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="why" class="section-card p-6 rounded-xl scroll-mt-6">
+                <h2 class="text-2xl font-bold text-sky-400 mb-4">Why I want to join</h2>
+                <div class="text-slate-300 space-y-4 leading-relaxed">
+                    <div>
+                        <h3 class="text-white font-semibold mb-1">1. The current flow doesn't quite fit how I work</h3>
+                        <p>
+                            I've been using the AI flow that was recently deployed, and honestly — the output is
+                            remarkable, but the <em>way</em> it gets the job done isn't well aligned with my own
+                            working style. I'd rather be inside the team helping shape that flow than stay on the
+                            outside working around it.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="text-white font-semibold mb-1">2. Passion for agentic systems at FRT scale</h3>
+                        <p>
+                            I'm genuinely excited about agent-driven software, and FRT is one of the few places
+                            where that work touches real products, real users, and real business impact —
+                            not toy demos.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="text-white font-semibold mb-1">3. Learn from a strong team, ship to real users</h3>
+                        <p>
+                            I want to work alongside engineers who push my level up, on a system whose output
+                            actually reaches customers. Tight feedback loop with production beats any side project.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="text-white font-semibold mb-1">4. Long-term alignment with the AI Agent direction</h3>
+                        <p>
+                            My career bet is on agentic AI. Joining the FRT AI Agent Chain puts me directly on
+                            that path — both for what I'll build and what I'll grow into over the next several years.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="built" class="section-card p-6 rounded-xl scroll-mt-6">
+                <h2 class="text-2xl font-bold text-sky-400 mb-4">AI stuff I built recently</h2>
+                <div class="text-slate-300 space-y-4 leading-relaxed">
+                    <p>
+                        I built an <strong class="text-white">AI agent team</strong> — a small crew of cooperating agents
+                        running locally on my machine.
+                    </p>
+                    <p>
+                        <span class="text-sky-300 font-medium">Stack:</span>
+                        <a href="http://nhnghia.multica" class="underline decoration-dotted hover:text-sky-400">multica</a>
+                        orchestrates the crew, with
+                        <code class="bg-slate-800 px-1.5 py-0.5 rounded text-sky-300 text-sm">kiro-cli</code> and
+                        <code class="bg-slate-800 px-1.5 py-0.5 rounded text-sky-300 text-sm">claude-cli</code>
+                        as the underlying agents.
+                    </p>
+                    <p>
+                        <span class="text-sky-300 font-medium">Core idea:</span> a custom agent scans my real Jira tickets,
+                        reads each ticket's state, and takes the right action automatically. The decisions are driven
+                        by <strong class="text-white">skills</strong> I author — so the behavior is fully controllable
+                        and inspectable, not a black box.
+                    </p>
+
+                    <div class="grid grid-cols-1 gap-6 mt-6">
+                        <figure>
+                            <button type="button" class="zoomable block w-full group" data-src="assets/apply-frt-ai-agent-chain/agents.jpg" data-caption="The agent team">
+                                <div class="aspect-video overflow-hidden rounded-lg border border-slate-700 group-hover:border-sky-500 transition-colors bg-slate-800">
+                                    <img src="assets/apply-frt-ai-agent-chain/agents.jpg" alt="Agent team setup" class="w-full h-full object-cover">
+                                </div>
+                            </button>
+                            <figcaption class="text-sm text-slate-400 mt-2 text-center italic">The agent team</figcaption>
+                        </figure>
+                        <figure>
+                            <button type="button" class="zoomable block w-full group" data-src="assets/apply-frt-ai-agent-chain/autopilot.jpg" data-caption="Autopilot in action">
+                                <div class="aspect-video overflow-hidden rounded-lg border border-slate-700 group-hover:border-sky-500 transition-colors bg-slate-800">
+                                    <img src="assets/apply-frt-ai-agent-chain/autopilot.jpg" alt="Autopilot running" class="w-full h-full object-cover">
+                                </div>
+                            </button>
+                            <figcaption class="text-sm text-slate-400 mt-2 text-center italic">Autopilot in action</figcaption>
+                        </figure>
+                        <figure>
+                            <button type="button" class="zoomable block w-full group" data-src="assets/apply-frt-ai-agent-chain/autopilot_report.jpg" data-caption="Autopilot report">
+                                <div class="aspect-video overflow-hidden rounded-lg border border-slate-700 group-hover:border-sky-500 transition-colors bg-slate-800">
+                                    <img src="assets/apply-frt-ai-agent-chain/autopilot_report.jpg" alt="Autopilot report" class="w-full h-full object-cover">
+                                </div>
+                            </button>
+                            <figcaption class="text-sm text-slate-400 mt-2 text-center italic">Autopilot report</figcaption>
+                        </figure>
+                        <figure>
+                            <button type="button" class="zoomable block w-full group" data-src="assets/apply-frt-ai-agent-chain/autopilot_result.jpg" data-caption="Autopilot result">
+                                <div class="aspect-video overflow-hidden rounded-lg border border-slate-700 group-hover:border-sky-500 transition-colors bg-slate-800">
+                                    <img src="assets/apply-frt-ai-agent-chain/autopilot_result.jpg" alt="Autopilot result" class="w-full h-full object-cover">
+                                </div>
+                            </button>
+                            <figcaption class="text-sm text-slate-400 mt-2 text-center italic">Autopilot result</figcaption>
+                        </figure>
+                    </div>
+
+                    <div class="mt-6 border-l-4 border-sky-500/60 bg-sky-500/5 p-4 rounded-r-lg">
+                        <p>
+                            <span class="text-sky-300 font-medium">Current state:</span>
+                            only one agent — <strong class="text-white">Marvin, the coordinator</strong> — is reliably working today.
+                        </p>
+                        <p class="mt-2">
+                            <span class="text-sky-300 font-medium">Ambition:</span>
+                            grow this into a full agent team that runs independently under my supervision —
+                            each agent owning a slice of the workflow, with me as the human-in-the-loop.
+                        </p>
+                    </div>
+                </div>
+            </section>
+            </main>
+        </div>
+
+        <footer class="mt-16 text-slate-500 text-sm">
+            <p>&copy; 2026 nhnghia</p>
+        </footer>
+    </div>
+
+    <div id="lightbox" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/90 p-4 cursor-zoom-out">
+        <button id="lightbox-close" type="button" class="absolute top-4 right-4 text-white/70 hover:text-white text-3xl leading-none" aria-label="Close">&times;</button>
+        <figure class="max-w-7xl max-h-full flex flex-col items-center">
+            <img id="lightbox-img" src="" alt="" class="max-h-[85vh] max-w-full object-contain rounded-lg shadow-2xl">
+            <figcaption id="lightbox-caption" class="text-slate-300 mt-4 text-center italic"></figcaption>
+        </figure>
+    </div>
+
+    <script>
+        (function () {
+            const lb = document.getElementById('lightbox');
+            const lbImg = document.getElementById('lightbox-img');
+            const lbCap = document.getElementById('lightbox-caption');
+            const lbClose = document.getElementById('lightbox-close');
+
+            function open(src, caption) {
+                lbImg.src = src;
+                lbImg.alt = caption || '';
+                lbCap.textContent = caption || '';
+                lb.classList.remove('hidden');
+                lb.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            }
+            function close() {
+                lb.classList.add('hidden');
+                lb.classList.remove('flex');
+                lbImg.src = '';
+                document.body.style.overflow = '';
+            }
+
+            document.querySelectorAll('.zoomable').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    open(btn.dataset.src, btn.dataset.caption);
+                });
+            });
+            lb.addEventListener('click', function (e) {
+                if (e.target === lb) close();
+            });
+            lbClose.addEventListener('click', close);
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && !lb.classList.contains('hidden')) close();
+            });
+
+            const sections = document.querySelectorAll('main section[id]');
+            const tocLinks = document.querySelectorAll('.toc-link');
+            const linkMap = {};
+            tocLinks.forEach(function (a) {
+                linkMap[a.getAttribute('href').slice(1)] = a;
+            });
+            const observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    const link = linkMap[entry.target.id];
+                    if (!link) return;
+                    if (entry.isIntersecting) {
+                        tocLinks.forEach(function (l) { l.classList.remove('active'); });
+                        link.classList.add('active');
+                    }
+                });
+            }, { rootMargin: '-20% 0px -60% 0px' });
+            sections.forEach(function (s) { observer.observe(s); });
+        })();
+    </script>
+</body>
+</html>

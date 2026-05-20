@@ -21,6 +21,18 @@
             transform: translateY(-2px);
             border-color: #38bdf8;
         }
+        .link-card-highlight {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(14, 165, 233, 0.08));
+            border: 1px solid rgba(56, 189, 248, 0.5);
+            box-shadow: 0 0 24px rgba(56, 189, 248, 0.15);
+            transition: all 0.2s ease-in-out;
+        }
+        .link-card-highlight:hover {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(14, 165, 233, 0.15));
+            border-color: #38bdf8;
+            transform: translateY(-2px);
+            box-shadow: 0 0 32px rgba(56, 189, 248, 0.3);
+        }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-6">
@@ -35,21 +47,40 @@
         <nav>
             <ul class="space-y-4">
                 <li>
-                    <a href="http://nhnghia.proxy-manager" target="_blank" class="link-card block p-4 rounded-xl flex items-center justify-between group">
-                        <span class="text-lg font-medium group-hover:text-sky-400 transition-colors">
-                            proxy manager
+                    <a href="apply-frt-ai-agent-chain.html" class="link-card-highlight block p-4 rounded-xl flex items-center justify-between group relative overflow-hidden">
+                        <span>
+                            <span class="text-lg font-bold text-white group-hover:text-sky-300 transition-colors block">
+                                FRT AI Agent Chain
+                            </span>
+                            <span class="text-sm text-sky-300 italic font-medium">Mr. KhoiPD please read this</span>
                         </span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-500 group-hover:text-sky-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-sky-400 group-hover:text-sky-300 transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                    </a>
+                </li>
+                <li>
+                    <a href="http://nhnghia.proxy-manager" target="_blank" class="link-card block p-4 rounded-xl flex items-center justify-between group">
+                        <span>
+                            <span class="text-lg font-medium group-hover:text-sky-400 transition-colors block">
+                                proxy manager
+                            </span>
+                            <span class="text-xs text-slate-500 italic">local only — works on my machine</span>
+                        </span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-500 group-hover:text-sky-400 transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
                     </a>
                 </li>
                 <li>
                     <a href="http://nhnghia.multica" target="_blank" class="link-card block p-4 rounded-xl flex items-center justify-between group">
-                        <span class="text-lg font-medium group-hover:text-sky-400 transition-colors">
-                            multica
+                        <span>
+                            <span class="text-lg font-medium group-hover:text-sky-400 transition-colors block">
+                                multica
+                            </span>
+                            <span class="text-xs text-slate-500 italic">local only — works on my machine</span>
                         </span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-500 group-hover:text-sky-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-500 group-hover:text-sky-400 transition-colors shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
                     </a>
