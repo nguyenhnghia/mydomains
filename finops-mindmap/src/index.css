@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+/* custom shade used throughout the component (not a Tailwind default) */
+@theme {
+  --color-slate-850: #172033;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
