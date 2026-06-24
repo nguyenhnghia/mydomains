@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phân tích Kiến trúc — Enterprise FinOps Platform (HLD)</title>
+<style>
+  :root {
+    --bg: #0f1419;
+    --panel: #1a212b;
+    --panel-2: #222c38;
+    --border: #2d3a48;
+    --text: #d7e0ea;
+    --muted: #8b9bad;
+    --accent: #4fb6ff;
+    --green: #3ddc97;
+    --amber: #ffc857;
+    --red: #ff6b6b;
+    --purple: #b794f6;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+    --sans: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: var(--sans); line-height: 1.65; font-size: 16px;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 48px 24px 96px; }
+  header.hero {
+    border-bottom: 1px solid var(--border); padding-bottom: 28px; margin-bottom: 40px;
+  }
+  .tag {
+    display: inline-block; font-family: var(--mono); font-size: 12px;
+    color: var(--accent); border: 1px solid var(--accent); border-radius: 100px;
+    padding: 3px 12px; margin-bottom: 16px; letter-spacing: .5px;
+  }
+  h1 { font-size: 30px; margin: 0 0 8px; line-height: 1.25; }
+  h2 {
+    font-size: 23px; margin: 56px 0 18px; padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  h3 { font-size: 18px; margin: 32px 0 10px; color: #eef4fb; }
+  p { margin: 12px 0; }
+  .lead { color: var(--muted); font-size: 17px; }
+  a { color: var(--accent); }
+  code {
+    font-family: var(--mono); font-size: .88em; background: #2a3543;
+    padding: 2px 6px; border-radius: 5px; color: #ffd9a0;
+  }
+  .toc {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 24px; margin: 28px 0;
+  }
+  .toc h4 { margin: 0 0 10px; color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
+  .toc ol { margin: 0; padding-left: 20px; columns: 2; }
+  .toc li { margin: 4px 0; }
+  .toc a { text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+
+  /* layer stack diagram */
+  .stack { display: flex; flex-direction: column; gap: 10px; margin: 24px 0; }
+  .layer {
+    border-radius: 10px; padding: 14px 18px; border: 1px solid var(--border);
+    position: relative; background: var(--panel);
+  }
+  .layer .lbl { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .layer .title { font-weight: 600; margin: 2px 0 8px; }
+  .layer .nodes { display: flex; flex-wrap: wrap; gap: 8px; }
+  .node {
+    background: var(--panel-2); border: 1px solid var(--border); border-radius: 7px;
+    padding: 5px 11px; font-size: 13px; font-family: var(--mono);
+  }
+  .l1 { border-left: 4px solid #5b8def; }
+  .l2 { border-left: 4px solid var(--green); }
+  .l3 { border-left: 4px solid var(--purple); }
+  .l4 { border-left: 4px solid var(--amber); }
+  .flowarrow { text-align: center; color: var(--muted); font-size: 18px; }
+
+  /* cards */
+  .card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+    padding: 22px 26px; margin: 20px 0;
+  }
+  .card.good { border-left: 5px solid var(--green); }
+  .card.risk { border-left: 5px solid var(--red); }
+  .card.warn { border-left: 5px solid var(--amber); }
+  .card .badge {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .5px;
+    padding: 3px 9px; border-radius: 100px; text-transform: uppercase;
+  }
+  .badge.g { background: rgba(61,220,151,.15); color: var(--green); }
+  .badge.r { background: rgba(255,107,107,.15); color: var(--red); }
+  .badge.w { background: rgba(255,200,87,.15); color: var(--amber); }
+  .card h3 { margin-top: 10px; }
+
+  .example {
+    background: #131922; border: 1px dashed var(--border); border-radius: 9px;
+    padding: 14px 18px; margin: 14px 0; font-size: 14.5px;
+  }
+  .example .elabel {
+    font-family: var(--mono); font-size: 11px; color: var(--amber);
+    text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 6px;
+  }
+  pre {
+    background: #0c1118; border: 1px solid var(--border); border-radius: 9px;
+    padding: 14px 16px; overflow-x: auto; font-family: var(--mono);
+    font-size: 13px; line-height: 1.5; color: #cfe3f5; margin: 12px 0;
+  }
+  pre .c { color: #6b7a8d; }
+  pre .k { color: #ff9d6b; }
+  pre .ok { color: var(--green); }
+  pre .bad { color: var(--red); }
+
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14.5px; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--panel-2); color: #eef4fb; font-size: 13px; }
+  td.c { text-align: center; }
+
+  .verdict {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 13px;
+    font-family: var(--mono); padding: 4px 10px; border-radius: 6px; margin-top: 8px;
+  }
+  .v-keep { background: rgba(61,220,151,.12); color: var(--green); }
+  .v-cut { background: rgba(255,107,107,.12); color: var(--red); }
+  .v-defer { background: rgba(255,200,87,.12); color: var(--amber); }
+
+  /* reasoning flow */
+  .reason { display: flex; align-items: stretch; gap: 0; margin: 18px 0; flex-wrap: wrap; }
+  .rstep {
+    flex: 1; min-width: 150px; background: var(--panel-2); border: 1px solid var(--border);
+    padding: 12px 14px; font-size: 13.5px; position: relative;
+  }
+  .rstep:not(:last-child)::after {
+    content: "→"; position: absolute; right: -13px; top: 50%; transform: translateY(-50%);
+    color: var(--accent); font-size: 18px; z-index: 2;
+  }
+  .rstep .n { font-family: var(--mono); color: var(--accent); font-size: 11px; }
+
+  /* phased roadmap */
+  .phase-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 12px; margin: 20px 0; }
+  .phase { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .phase .ph { font-family: var(--mono); font-size: 12px; color: var(--accent); }
+  .phase ul { padding-left: 18px; margin: 8px 0 0; font-size: 13.5px; }
+  .phase li { margin: 3px 0; }
+  .keep-tag { color: var(--green); }
+  .cut-tag { color: var(--red); text-decoration: line-through; opacity: .7; }
+
+  footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
+  .muted { color: var(--muted); }
+  ul.clean { list-style: none; padding-left: 0; }
+  ul.clean li { padding: 6px 0 6px 26px; position: relative; }
+  ul.clean li::before { content: "▸"; position: absolute; left: 4px; color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <span class="tag">PHÂN TÍCH KIẾN TRÚC · HLD REVIEW</span>
+  <h1>Enterprise FinOps Platform — Phân tích phương án kiến trúc</h1>
+  <p class="lead">Đọc &amp; mổ xẻ tài liệu High Level Design: điểm mạnh, rủi ro, ví dụ minh họa và đề xuất giảm tải phạm vi theo từng giai đoạn.</p>
+  <p class="muted">Nguồn: <a href="https://frt-finops-gitbook.vercel.app/architecture">frt-finops-gitbook.vercel.app/architecture</a> · Cập nhật tài liệu gốc: 22/06/2026</p>
+</header>
+
+<div class="toc">
+  <h4>Mục lục</h4>
+  <ol>
+    <li><a href="#overview">Tổng quan kiến trúc</a></li>
+    <li><a href="#strengths">Điểm mạnh + ví dụ</a></li>
+    <li><a href="#risks">Rủi ro &amp; câu hỏi + ví dụ</a></li>
+    <li><a href="#scope">Lệch pha phạm vi (biểu đồ)</a></li>
+    <li><a href="#proposal">Đề xuất triển khai theo giai đoạn</a></li>
+    <li><a href="#summary">Kết luận</a></li>
+  </ol>
+</div>
+
+<h2 id="overview">1 · Tổng quan kiến trúc</h2>
+<p>Hệ thống chia thành 4 layer, với một ranh giới then chốt: <strong>mọi tính toán tài chính là tất định (rule-based), AI chỉ đứng ngoài đọc dữ liệu đã chốt.</strong></p>
+
+<div class="stack">
+  <div class="layer l4">
+    <span class="lbl">LAYER 4 — Tự động hóa</span>
+    <div class="title">Agent Automation (có Human-in-the-Loop)</div>
+    <div class="nodes">
+      <span class="node">Agent Orchestrator</span>
+      <span class="node">Data Quality Agent</span>
+      <span class="node">Root Cause Agent</span>
+      <span class="node">Auto-Remediation Agent</span>
+      <span class="node">🧑 HITL Approval</span>
+    </div>
+  </div>
+  <div class="flowarrow">▲ chỉ đọc / đề xuất</div>
+  <div class="layer l3">
+    <span class="lbl">LAYER 3 — Trí tuệ (read-only)</span>
+    <div class="title">AI Intelligence Layer</div>
+    <div class="nodes">
+      <span class="node">AI Gateway (LiteLLM)</span>
+      <span class="node">NL Query Service</span>
+      <span class="node">Recommendation</span>
+      <span class="node">Summary Service</span>
+    </div>
+  </div>
+  <div class="flowarrow">▲ API tools định sẵn (không SQL trực tiếp)</div>
+  <div class="layer l2">
+    <span class="lbl">LAYER 2 — Lõi tất định</span>
+    <div class="title">FinOps Core Platform</div>
+    <div class="nodes">
+      <span class="node">ETL &amp; Normalization (FOCUS)</span>
+      <span class="node">Data Quality Framework</span>
+      <span class="node">Allocation Engine</span>
+      <span class="node">Cost Analytics (ClickHouse)</span>
+      <span class="node">Data Lake (S3/Parquet)</span>
+    </div>
+  </div>
+  <div class="flowarrow">▲ raw data</div>
+  <div class="layer l1">
+    <span class="lbl">LAYER 1 — Thu thập</span>
+    <div class="title">Data Ingestion</div>
+    <div class="nodes">
+      <span class="node">AWS Connector</span>
+      <span class="node">Azure Connector</span>
+      <span class="node">GCP Connector</span>
+      <span class="node">K8s Connector</span>
+    </div>
+  </div>
+</div>
+
+<p class="muted">Luồng dữ liệu: <code>Ingest → Parse/Clean → Load Parquet → Rule Engine → ClickHouse → NestJS API → Next.js Dashboard</code>. AI nhận "context" ở cuối luồng, không bao giờ ở giữa.</p>
+
+
+<h2 id="strengths">2 · Điểm mạnh — làm rõ kèm ví dụ</h2>
+
+<div class="card good">
+  <span class="badge g">Điểm mạnh #1</span>
+  <h3>Tách AI khỏi tính toán tài chính (Nguyên tắc 2)</h3>
+  <p>Đây là quyết định quan trọng nhất của cả tài liệu. Mọi sản phẩm "AI + tiền" đều chết ở chỗ để LLM tự suy ra con số. Ở đây AI bị chặn cứng: không chạy SQL trực tiếp, chỉ gọi API tool định sẵn, temperature = 0.0, context chỉ nhận JSON đã tổng hợp.</p>
+  <div class="example">
+    <span class="elabel">Ví dụ minh họa rủi ro nếu KHÔNG tách</span>
+    <p>Giả sử hỏi: <em>"Chi phí team Payment tháng 5 là bao nhiêu?"</em></p>
+    <pre><span class="c"># Nếu để LLM tự tính (SAI — bị cấm bởi Nguyên tắc 2)</span>
+LLM đọc 2.1 triệu dòng billing → tự cộng → trả lời:
+<span class="bad">"≈ $48,000"  ❌ con số bịa, không tái lập được, không audit được</span>
+
+<span class="c"># Cách của tài liệu (ĐÚNG)</span>
+LLM gọi tool: getAllocatedCost(team="Payment", month="2026-05")
+  → Allocation Engine (rule-based) trả: <span class="ok">$47,213.55  ✅</span>
+LLM chỉ diễn đạt lại con số đã chốt thành câu chữ.</pre>
+  </div>
+  <span class="verdict v-keep">✓ GIỮ — đây là xương sống, không nhân nhượng</span>
+</div>
+
+<div class="card good">
+  <span class="badge g">Điểm mạnh #2</span>
+  <h3>Invariant Zero-sum cho chất lượng dữ liệu</h3>
+  <p>Quy tắc <code>Σ Allocated_Cost = Σ Raw_Cost</code> biến khái niệm mơ hồ "dữ liệu đúng" thành một phép kiểm tra số học tất định. Mỗi lần chạy ETL có thể tự kiểm tra và chặn nếu lệch.</p>
+  <div class="example">
+    <span class="elabel">Ví dụ một check tất định</span>
+    <pre><span class="k">raw_total</span>      = 1,000,000.00  <span class="c"># tổng hóa đơn AWS tháng 5</span>
+<span class="k">allocated</span>      =   999,998.50  <span class="c"># sau khi chia về các team</span>
+<span class="k">diff</span>           =         1.50
+
+<span class="bad">if abs(diff) &gt; 0.01: BLOCK pipeline + cảnh báo</span>
+<span class="c"># → $1.50 chi phí "mồ côi" không gán được team nào
+#   thường do tag thiếu hoặc account chưa map trong CMDB</span></pre>
+  </div>
+  <span class="verdict v-keep">✓ GIỮ — rẻ, mạnh, là bằng chứng audit</span>
+</div>
+
+<div class="card good">
+  <span class="badge g">Điểm mạnh #3</span>
+  <h3>ClickHouse thay vì Snowflake (ADR-2)</h3>
+  <p>Lập luận tự nhất quán: một nền tảng <em>tiết kiệm chi phí</em> mà lại đốt tiền compute cho chính nó thì phản tác dụng. Snowflake tính tiền theo thời gian compute → AI Agent query không giới hạn sẽ tạo hóa đơn khổng lồ.</p>
+  <div class="example">
+    <span class="elabel">Ví dụ vì sao tốc độ quan trọng</span>
+    <p>Dashboard cần group-by 2.1 triệu dòng theo team × tháng × service. PostgreSQL (row-store) quét toàn bảng → vài giây đến vài chục giây. ClickHouse (column-store) chỉ đọc đúng các cột cần → dưới 1 giây. Với dashboard tương tác, đây là khác biệt sống còn.</p>
+  </div>
+  <span class="verdict v-keep">✓ GIỮ — lựa chọn đúng cho OLAP</span>
+</div>
+
+<div class="card good">
+  <span class="badge g">Điểm mạnh #4</span>
+  <h3>Temporal cho Human-in-the-Loop (ADR-4)</h3>
+  <p>Điểm khác biệt then chốt so với Airflow: Temporal có thể <strong>pause workflow nhiều ngày để chờ người duyệt</strong> rồi chạy tiếp, vẫn giữ nguyên state. Đây đúng là thứ HITL cần.</p>
+  <div class="reason">
+    <div class="rstep"><span class="n">STEP 1</span><br>Agent phát hiện anomaly</div>
+    <div class="rstep"><span class="n">STEP 2</span><br>Sinh hành động remediation</div>
+    <div class="rstep"><span class="n">STEP 3</span><br>Workflow PAUSE — chờ người</div>
+    <div class="rstep"><span class="n">STEP 4</span><br>Người duyệt → resume &amp; execute</div>
+  </div>
+  <span class="verdict v-defer">✓ GIỮ nhưng HOÃN — chỉ cần khi tới Giai đoạn 4</span>
+</div>
+
+<h2 id="risks">3 · Rủi ro &amp; câu hỏi — làm rõ kèm ví dụ</h2>
+
+<div class="card risk">
+  <span class="badge r">Rủi ro #1 · Quan trọng nhất</span>
+  <h3>Độ phức tạp vận hành quá cao so với giá trị giai đoạn đầu</h3>
+  <p>Tài liệu nói "Modular Monolith giai đoạn đầu" (mục 9) nhưng phần còn lại lại mô tả full microservices + một rừng hạ tầng. Roadmap (mục 25) và kiến trúc (mục 8) <strong>lệch pha</strong> nhau.</p>
+  <div class="example">
+    <span class="elabel">Ví dụ — số thành phần phải vận hành ngay từ ngày 1</span>
+    <pre>PostgreSQL · ClickHouse · S3 · Kafka · SQS · Temporal
+LiteLLM · LangGraph · Kubernetes · Vault · Terraform · OpenTelemetry
+<span class="bad">→ 12 hệ thống hạ tầng cho một sản phẩm chưa ra được con số đầu tiên</span></pre>
+    <p>Với một team mới bắt đầu, mỗi hệ thống là một nguồn lỗi, một thứ phải monitor, một thứ phải backup. Giá trị 80% của FinOps đến từ Giai đoạn 1–2 (ingest → normalize → allocate → dashboard) — không cần phần lớn danh sách trên.</p>
+  </div>
+  <p><strong>Câu hỏi cho tác giả:</strong> Infra tối thiểu cho từng giai đoạn là gì? Tài liệu nên có một bảng "thành phần nào bật ở giai đoạn nào".</p>
+  <span class="verdict v-cut">✗ Cần cắt giảm mạnh cho giai đoạn đầu (xem mục 5)</span>
+</div>
+
+<div class="card warn">
+  <span class="badge w">Rủi ro #2</span>
+  <h3>Kafka có thực sự cần ở giai đoạn đầu?</h3>
+  <p>Tài liệu nói billing là batch hàng ngày (mục 6, 13). Kafka được chọn vì replayability + high throughput (ADR-3) — nhưng cả hai lợi ích này đã có sẵn từ S3 raw zone (vốn immutable, append-only).</p>
+  <div class="example">
+    <span class="elabel">Ví dụ — replay không cần Kafka</span>
+    <pre><span class="c"># Cần chạy lại pipeline cho ngày 12/05?</span>
+<span class="ok">đọc lại s3://raw/aws/2026-05-12/*.csv  → ETL lại</span>
+<span class="c"># S3 đã là "nguồn replay" bất biến. Daily batch
+# không sinh ra throughput cần tới Kafka.</span></pre>
+  </div>
+  <p>Kafka chỉ thực sự đáng giá khi có nhu cầu <em>streaming gần real-time</em> nhiều nguồn. Với cron daily → dùng SQS (vốn đã có trong stack) là đủ kích hoạt job.</p>
+  <span class="verdict v-defer">⏸ HOÃN tới khi có nhu cầu streaming thật</span>
+</div>
+
+<div class="card warn">
+  <span class="badge w">Rủi ro #3</span>
+  <h3>"Near real-time anomaly" mâu thuẫn với "batch hàng ngày"</h3>
+  <p>Mục 6 yêu cầu phát hiện bất thường near real-time, nhưng dữ liệu cost từ cloud provider vốn trễ.</p>
+  <div class="example">
+    <span class="elabel">Ví dụ — độ trễ thực tế của dữ liệu billing</span>
+    <pre>AWS CUR    : cập nhật vài lần/ngày, trễ <span class="k">6–24h</span>
+Azure/GCP  : export theo ngày, trễ tương tự
+<span class="bad">→ Không thể "real-time" phát hiện cost spike nếu dữ liệu cost
+   đến chậm 1 ngày. "Real-time" chỉ đúng nếu bám METRIC usage
+   (CPU, request count) chứ không phải COST.</span></pre>
+  </div>
+  <p><strong>Câu hỏi:</strong> Anomaly detection chạy trên metric usage (real-time được) hay trên cost data (trễ)? Cần tách rõ hai khái niệm để không hứa sai SLA.</p>
+  <span class="verdict v-defer">⚠ Làm rõ định nghĩa trước khi cam kết SLA</span>
+</div>
+
+<div class="card warn">
+  <span class="badge w">Rủi ro #4</span>
+  <h3>Shared-cost allocation: phần khó nhất nhưng mô tả mỏng nhất</h3>
+  <p>Mục 14 nói chia chi phí dùng chung (K8s cluster, DB chung) "theo tỷ lệ metric sử dụng". Đây là nơi dễ sai số và dễ gây tranh cãi giữa các team nhất.</p>
+  <div class="example">
+    <span class="elabel">Ví dụ — chi phí "mồ côi" của cluster</span>
+    <pre>K8s cluster: $10,000/tháng
+  Team A dùng 40% CPU  → $4,000
+  Team B dùng 30% CPU  → $3,000
+  Idle / overhead 30%  → <span class="bad">$3,000 phân về ĐÂU?</span>
+
+<span class="c"># Nếu bỏ qua $3,000 idle → vi phạm Zero-sum (Rủi ro chéo!)
+# Nếu chia đều → team tiết kiệm bị "phạt" oan
+# Nếu chia theo tỷ lệ → cần định nghĩa công thức rõ ràng</span></pre>
+  </div>
+  <p><strong>Câu hỏi:</strong> Idle cost / overhead cluster phân bổ theo quy tắc nào? Xử lý ra sao khi telemetry thiếu? Đây là logic phải định nghĩa tất định từ đầu.</p>
+  <span class="verdict v-keep">✓ Cần đặc tả chi tiết — đừng để mơ hồ</span>
+</div>
+
+<div class="card warn">
+  <span class="badge w">Rủi ro #5</span>
+  <h3>Row-level RBAC enforce ở đâu?</h3>
+  <p>Mục 6 &amp; 16 yêu cầu row-level security (team chỉ thấy cost của team mình). Nhưng ClickHouse không mạnh về row-level policy như PostgreSQL.</p>
+  <div class="example">
+    <span class="elabel">Ví dụ — bề mặt rò rỉ nếu RBAC chỉ ở 1 chỗ</span>
+    <pre>Đường 1: Dashboard → NestJS API  → có guard ✅
+Đường 2: AI NLQ      → API tool    → <span class="bad">có cùng guard không?</span>
+Đường 3: Export/BI   → ClickHouse  → <span class="bad">guard ở đâu?</span>
+
+<span class="c"># Nếu RBAC chỉ nằm ở tầng API mà AI Gateway hay BI tool
+# đi đường vòng tới ClickHouse → lộ cost team khác.</span></pre>
+  </div>
+  <p><strong>Câu hỏi:</strong> RBAC enforce ở tầng API (NestJS) hay tầng DB? Mọi đường truy cập — kể cả AI — có đi qua cùng một guard không?</p>
+  <span class="verdict v-keep">✓ Thiết kế một điểm enforce duy nhất, mọi path đi qua</span>
+</div>
+
+<div class="card risk">
+  <span class="badge r">Rủi ro #6</span>
+  <h3>Ngưỡng confidence 95% cho auto-remediation lấy từ đâu?</h3>
+  <p>Mục 18 dùng "độ tin cậy &gt; 95% thì tự chạy". 95% là một magic number — chưa nói rõ tính thế nào, calibrate ra sao. Auto-remediation thay đổi hạ tầng là hành động nguy hiểm.</p>
+  <div class="example">
+    <span class="elabel">Ví dụ — vì sao 95% chưa đủ tin</span>
+    <pre>Agent: "Tự tin 96% rằng spike do EBS volume bị bỏ quên
+        → hành động: xóa volume"
+<span class="bad">Nhưng volume đó là backup của DB production chưa gắn tag.
+Confidence 96% của LLM KHÔNG phải xác suất thống kê thật.</span>
+
+<span class="ok">An toàn hơn: giai đoạn đầu chạy RECOMMEND-ONLY (dry-run),
+chỉ tạo ticket Jira, người làm. Tích lũy lịch sử rồi mới
+bật execute tự động khi đã calibrate được confidence.</span></pre>
+  </div>
+  <p><strong>Câu hỏi:</strong> Confidence score tính bằng gì? Đã calibrate chưa? Đề xuất: bắt đầu ở chế độ chỉ-đề-xuất, chưa execute.</p>
+  <span class="verdict v-defer">⏸ Bắt đầu dry-run, execute là bước sau cùng</span>
+</div>
+
+<h2 id="scope">4 · Lệch pha phạm vi — giá trị vs độ phức tạp</h2>
+<p>Đây là luận điểm trung tâm: <strong>kiến trúc mô tả trạng thái cuối (end-state) đầy đủ 4 layer, nhưng phần lớn giá trị đến rất sớm.</strong></p>
+
+<table>
+  <thead>
+    <tr><th>Hạng mục</th><th class="c">Giá trị mang lại</th><th class="c">Độ phức tạp</th><th>Nên làm khi</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Ingest + Normalize (FOCUS)</td><td class="c">🟢 Cao</td><td class="c">🟢 Thấp</td><td>Ngay — Giai đoạn 1</td></tr>
+    <tr><td>Allocation Engine (rule-based)</td><td class="c">🟢 Rất cao</td><td class="c">🟡 Vừa</td><td>Ngay — Giai đoạn 1</td></tr>
+    <tr><td>Dashboard + Budget + Alert</td><td class="c">🟢 Cao</td><td class="c">🟡 Vừa</td><td>Giai đoạn 2</td></tr>
+    <tr><td>AI NLQ + Summary</td><td class="c">🟡 Vừa</td><td class="c">🟡 Vừa</td><td>Giai đoạn 3</td></tr>
+    <tr><td>Agent Auto-Remediation</td><td class="c">🟡 Vừa</td><td class="c">🔴 Rất cao</td><td>Giai đoạn 4</td></tr>
+    <tr><td>Kafka streaming</td><td class="c">🔴 Thấp (giai đoạn đầu)</td><td class="c">🔴 Cao</td><td>Khi có nhu cầu streaming</td></tr>
+    <tr><td>Temporal</td><td class="c">🟡 Chỉ cho HITL</td><td class="c">🔴 Cao</td><td>Giai đoạn 4</td></tr>
+  </tbody>
+</table>
+
+<p class="muted">Nguyên tắc đọc bảng: ưu tiên ô <em>giá trị Cao + phức tạp Thấp/Vừa</em> trước. Mọi thứ <em>giá trị thấp + phức tạp cao</em> nên hoãn cho tới khi có nhu cầu thật.</p>
+
+
+<h2 id="proposal">5 · Đề xuất triển khai theo giai đoạn</h2>
+<p>Nếu là em triển khai, em sẽ tách rõ infra theo giai đoạn để tránh over-engineering. <span class="keep-tag">Xanh = thêm vào</span>, <span class="cut-tag">gạch = chưa cần</span>.</p>
+
+<div class="phase-grid">
+  <div class="phase">
+    <span class="ph">GIAI ĐOẠN 1–2 · MVP có giá trị</span>
+    <p style="font-size:13.5px" class="muted">Mục tiêu: ra được con số allocate đúng + dashboard.</p>
+    <ul class="clean">
+      <li class="keep-tag">NestJS Modular Monolith</li>
+      <li class="keep-tag">PostgreSQL (metadata, rules)</li>
+      <li class="keep-tag">ClickHouse (OLAP)</li>
+      <li class="keep-tag">S3 + Parquet (raw/clean zone)</li>
+      <li class="keep-tag">Cron + SQS (kích hoạt job)</li>
+      <li class="keep-tag">Next.js Dashboard + Budget/Alert</li>
+    </ul>
+    <p style="margin-top:10px;font-size:13px"><span class="cut-tag">Kafka</span> · <span class="cut-tag">Temporal</span> · <span class="cut-tag">Agent</span> · <span class="cut-tag">AI Layer</span></p>
+  </div>
+
+  <div class="phase">
+    <span class="ph">GIAI ĐOẠN 3 · AI Intelligence</span>
+    <p style="font-size:13.5px" class="muted">Khi dữ liệu đã sạch &amp; đáng tin.</p>
+    <ul class="clean">
+      <li class="keep-tag">AI Gateway (LiteLLM)</li>
+      <li class="keep-tag">NL Query (API tools, không SQL)</li>
+      <li class="keep-tag">Summary / Recommendation</li>
+      <li class="keep-tag">RBAC guard chung cho mọi path</li>
+    </ul>
+    <p style="margin-top:10px;font-size:13px"><span class="cut-tag">Agent execute</span> vẫn chưa bật</p>
+  </div>
+
+  <div class="phase">
+    <span class="ph">GIAI ĐOẠN 4 · Agentic + HITL</span>
+    <p style="font-size:13.5px" class="muted">Chỉ khi có lịch sử để tin confidence.</p>
+    <ul class="clean">
+      <li class="keep-tag">Temporal (pause/resume HITL)</li>
+      <li class="keep-tag">Root Cause Agent</li>
+      <li class="keep-tag">Auto-Remediation <em>dry-run trước</em></li>
+      <li class="keep-tag">Kafka (nếu cần streaming)</li>
+    </ul>
+    <p style="margin-top:10px;font-size:13px">Execute thật = bước cuối, sau calibrate</p>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Suy luận của đề xuất này</h3>
+  <div class="reason">
+    <div class="rstep"><span class="n">TIỀN ĐỀ</span><br>Giá trị FinOps = allocate đúng + nhìn thấy chi phí</div>
+    <div class="rstep"><span class="n">HỆ QUẢ</span><br>Layer 1–2 cho 80% giá trị, phức tạp thấp</div>
+    <div class="rstep"><span class="n">RỦI RO</span><br>Layer 3–4 + Kafka/Temporal = phức tạp cao, giá trị đến muộn</div>
+    <div class="rstep"><span class="n">KẾT LUẬN</span><br>Hoãn phần phức tạp → giảm rủi ro vận hành, ra giá trị nhanh</div>
+  </div>
+</div>
+
+
+<h2 id="summary">6 · Kết luận</h2>
+<div class="card good">
+  <p>Đây là một HLD <strong>chững chạc và đúng về nguyên tắc</strong> — đặc biệt ở ranh giới giữa AI và lớp tài chính tất định, và ở các invariant kiểm toán được (zero-sum). Các ADR có lập luận tự nhất quán.</p>
+  <p>Rủi ro lớn nhất <strong>không phải thiết kế sai, mà là tham vọng phạm vi</strong>: tài liệu vẽ trạng thái cuối đầy đủ 4 layer trong khi 80% giá trị đến từ Giai đoạn 1–2. Nếu triển khai cả 4 layer + 12 hệ thống hạ tầng ngay từ đầu, rủi ro lớn nhất là sa lầy vận hành trước khi kịp chứng minh giá trị.</p>
+  <p><strong>Khuyến nghị cốt lõi:</strong></p>
+  <ul class="clean">
+    <li>Giai đoạn 1–2: Modular Monolith + PostgreSQL + ClickHouse + S3 + cron/SQS. Bỏ Kafka/Temporal/Agent.</li>
+    <li>Đặc tả kỹ Shared-cost allocation &amp; idle cost (Rủi ro #4) — đây là nơi dễ sai nhất.</li>
+    <li>Thiết kế một điểm enforce RBAC duy nhất mà mọi path (kể cả AI) đi qua (Rủi ro #5).</li>
+    <li>Auto-remediation bắt đầu ở chế độ dry-run / recommend-only (Rủi ro #6).</li>
+    <li>Làm rõ "real-time" là trên metric hay trên cost trước khi cam kết SLA (Rủi ro #3).</li>
+  </ul>
+</div>
+
+<footer>
+  Phân tích dựa trên tài liệu HLD công khai tại frt-finops-gitbook.vercel.app/architecture (cập nhật 22/06/2026).
+  Nội dung gốc đã được diễn giải lại để phân tích — không sao chép nguyên văn.
+  Tài liệu phân tích này phục vụ review nội bộ.
+</footer>
+
+</div>
+</body>
+</html>
