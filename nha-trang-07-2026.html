@@ -263,12 +263,12 @@
         // Default Rich Nha Trang Itinerary (4 Days 3 Nights)
         const defaultNhaTrangData = [
             // Day 1
-            { id: "nt1", date: "2026-07-17", time: "06:00", category: "transport", activity: "Bay/Di chuyển đến Nha Trang", location: "Sân bay Cam Ranh / Ga Nha Trang", budget: 1500000, actual: 1450000, completed: true, notes: "Đặt vé khứ hồi sớm để có giá tốt. Nhớ mang theo CCCD." },
-            { id: "nt2", date: "2026-07-17", time: "09:30", category: "accommodation", activity: "Check-in & Gửi hành lý tại Khách sạn", location: "Khách sạn Trần Phú, Lộc Thọ, Nha Trang", budget: 1200000, actual: 1200000, completed: true, notes: "Tiền phòng cho cả chuyến đi (3 đêm), chia theo đầu người." },
-            { id: "nt3", date: "2026-07-17", time: "11:30", category: "food", activity: "Ăn trưa Nem nướng Đặng Văn Quyên", location: "16A Lãn Ông, Xương Huân, Nha Trang", budget: 80000, actual: 75000, completed: true, notes: "Món nem nướng đặc sản siêu nổi tiếng, nước chấm ấm nóng béo ngậy." },
-            { id: "nt4", date: "2026-07-17", time: "14:30", category: "sightseeing", activity: "Tham quan Tháp Bà Ponagar & Tắm bùn khoáng", location: "Tháp Bà, Vĩnh Phước, Nha Trang", budget: 250000, actual: 260000, completed: true, notes: "Mua vé tắm bùn thư giãn sau chuyến đi dài. Nhớ mang đồ bơi." },
-            { id: "nt5", date: "2026-07-17", time: "18:30", category: "food", activity: "Ăn tối Hải sản bình dân bờ kè Tháp Bà", location: "Đường Tháp Bà, Nha Trang", budget: 300000, actual: 320000, completed: true, notes: "Ăn ốc, ghẹ, tôm tít rang muối. Hỏi giá kỹ trước khi cân." },
-            { id: "nt6", date: "2026-07-17", time: "21:00", category: "entertainment", activity: "Dạo Chợ đêm & Quảng trường 2/4", location: "Quảng trường 2/4, Trần Phú, Nha Trang", budget: 50000, actual: 40000, completed: true, notes: "Đi bộ hóng gió biển, uống nước dừa." },
+            { id: "nt1", date: "2026-07-17", time: "06:00", category: "transport", activity: "Bay/Di chuyển đến Nha Trang", location: "Sân bay Cam Ranh / Ga Nha Trang", budget: 1500000, actual: 0, completed: false, notes: "Đặt vé khứ hồi sớm để có giá tốt. Nhớ mang theo CCCD." },
+            { id: "nt2", date: "2026-07-17", time: "09:30", category: "accommodation", activity: "Check-in & Gửi hành lý tại Khách sạn", location: "Khách sạn Trần Phú, Lộc Thọ, Nha Trang", budget: 1200000, actual: 0, completed: false, notes: "Tiền phòng cho cả chuyến đi (3 đêm), chia theo đầu người." },
+            { id: "nt3", date: "2026-07-17", time: "11:30", category: "food", activity: "Ăn trưa Nem nướng Đặng Văn Quyên", location: "16A Lãn Ông, Xương Huân, Nha Trang", budget: 80000, actual: 0, completed: false, notes: "Món nem nướng đặc sản siêu nổi tiếng, nước chấm ấm nóng béo ngậy." },
+            { id: "nt4", date: "2026-07-17", time: "14:30", category: "sightseeing", activity: "Tham quan Tháp Bà Ponagar & Tắm bùn khoáng", location: "Tháp Bà, Vĩnh Phước, Nha Trang", budget: 250000, actual: 0, completed: false, notes: "Mua vé tắm bùn thư giãn sau chuyến đi dài. Nhớ mang đồ bơi." },
+            { id: "nt5", date: "2026-07-17", time: "18:30", category: "food", activity: "Ăn tối Hải sản bình dân bờ kè Tháp Bà", location: "Đường Tháp Bà, Nha Trang", budget: 300000, actual: 0, completed: false, notes: "Ăn ốc, ghẹ, tôm tít rang muối. Hỏi giá kỹ trước khi cân." },
+            { id: "nt6", date: "2026-07-17", time: "21:00", category: "entertainment", activity: "Dạo Chợ đêm & Quảng trường 2/4", location: "Quảng trường 2/4, Trần Phú, Nha Trang", budget: 50000, actual: 0, completed: false, notes: "Đi bộ hóng gió biển, uống nước dừa." },
             
             // Day 2
             { id: "nt7", date: "2026-07-18", time: "08:00", category: "sightseeing", activity: "Tour 3 Đảo Cano (Vịnh San Hô - Làng Chài - Bãi Tranh)", location: "Cảng du lịch Nha Trang, Vĩnh Trường", budget: 450000, actual: 0, completed: false, notes: "Tour trọn gói đón tại khách sạn. Mang kem chống nắng và kính râm." },
@@ -300,12 +300,22 @@
             shopping: { label: "Quà cáp", icon: "shopping-bag", bg: "bg-cyan-50 text-cyan-700 border-cyan-100", dot: "bg-cyan-500" }
         };
 
+        // Safe JSON.parse: corrupt localStorage falls back to defaults instead of killing the app
+        function safeParse(raw, fallback) {
+            try {
+                const parsed = JSON.parse(raw);
+                return (parsed === null || parsed === undefined) ? fallback : parsed;
+            } catch (e) {
+                return fallback;
+            }
+        }
+
         // App state variables
-        let itinerary = JSON.parse(localStorage.getItem('nhatrang_itinerary')) || defaultNhaTrangData;
+        let itinerary = safeParse(localStorage.getItem('nhatrang_itinerary'), defaultNhaTrangData);
         let budgetGoal = parseFloat(localStorage.getItem('nhatrang_budget_goal')) || 8000000;
         let currentFilter = 'all';
         let currentCategoryFilter = 'all';
-        let collapsedDates = JSON.parse(localStorage.getItem('nhatrang_collapsed_dates')) || [];
+        let collapsedDates = safeParse(localStorage.getItem('nhatrang_collapsed_dates'), []);
 
         // Format Currency Helper
         function formatVND(value) {
