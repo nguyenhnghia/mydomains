@@ -317,6 +317,75 @@
         let currentCategoryFilter = 'all';
         let collapsedDates = safeParse(localStorage.getItem('nhatrang_collapsed_dates'), []);
 
+        // --- Two-user sync via /api/trip (see docs/superpowers/specs/2026-07-08-nha-trang-multi-user-sync-design.md) ---
+        const SYNC_DEBOUNCE_MS = 2000;
+        let syncCode = localStorage.getItem('nhatrang_sync_code');
+        let updatedAt = parseInt(localStorage.getItem('nhatrang_updated_at'), 10) || 0;
+        let pushTimer = null;
+
+        function ensureSyncCode() {
+            if (syncCode) return true;
+            const entered = prompt('Nhập mã đồng bộ để chia sẻ lịch trình với người đồng hành.\nBấm Cancel để dùng chế độ offline (chỉ lưu trên máy này):');
+            if (!entered || !entered.trim()) return false;
+            syncCode = entered.trim();
+            localStorage.setItem('nhatrang_sync_code', syncCode);
+            return true;
+        }
+
+        async function pullFromServer() {
+            if (!syncCode) return;
+            try {
+                const resp = await fetch('/api/trip', { headers: { 'x-trip-secret': syncCode } });
+                if (resp.status === 401) {
+                    localStorage.removeItem('nhatrang_sync_code');
+                    syncCode = null;
+                    showToast('Mã đồng bộ không đúng — sẽ hỏi lại khi tải lại trang.', 'warning');
+                    return;
+                }
+                if (!resp.ok) return;
+                const doc = await resp.json();
+                if (!doc || !Array.isArray(doc.itinerary) || typeof doc.updatedAt !== 'number') return;
+                if (doc.updatedAt > updatedAt) {
+                    itinerary = doc.itinerary;
+                    if (typeof doc.budgetGoal === 'number' && doc.budgetGoal > 0) budgetGoal = doc.budgetGoal;
+                    updatedAt = doc.updatedAt;
+                    // Write localStorage directly — do NOT call saveToStorage(), it would push the pull back up
+                    localStorage.setItem('nhatrang_itinerary', JSON.stringify(itinerary));
+                    localStorage.setItem('nhatrang_budget_goal', budgetGoal);
+                    localStorage.setItem('nhatrang_updated_at', String(updatedAt));
+                    updateDashboard();
+                    renderItinerary();
+                    showToast('Đã đồng bộ dữ liệu mới nhất từ người đồng hành!', 'success');
+                }
+            } catch (e) {
+                // Offline or server down — local copy renders as normal
+            }
+        }
+
+        function schedulePush() {
+            if (!syncCode) return;
+            updatedAt = Date.now();
+            localStorage.setItem('nhatrang_updated_at', String(updatedAt));
+            clearTimeout(pushTimer);
+            pushTimer = setTimeout(pushToServer, SYNC_DEBOUNCE_MS);
+        }
+
+        async function pushToServer() {
+            if (!syncCode) return;
+            try {
+                const resp = await fetch('/api/trip', {
+                    method: 'PUT',
+                    headers: { 'x-trip-secret': syncCode, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ itinerary, budgetGoal, updatedAt })
+                });
+                if (!resp.ok) {
+                    showToast('Không thể đồng bộ lên máy chủ — dữ liệu vẫn được lưu trên máy này.', 'warning');
+                }
+            } catch (e) {
+                showToast('Không thể đồng bộ (mất mạng?) — dữ liệu vẫn được lưu trên máy này.', 'warning');
+            }
+        }
+
         // Format Currency Helper
         function formatVND(value) {
             return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
@@ -375,6 +444,7 @@
             const num = parseFloat(cleanVal) || 0;
             budgetGoal = num;
             localStorage.setItem('nhatrang_budget_goal', num);
+            schedulePush();
             showToast("Hạn mức tổng chi tiêu đã được cập nhật thành công!", 'success');
             updateDashboard();
         }
@@ -384,6 +454,7 @@
             localStorage.setItem('nhatrang_itinerary', JSON.stringify(itinerary));
             updateDashboard();
             renderItinerary();
+            schedulePush();
         }
 
         // Toggle Collapse/Expand for a specific date
@@ -843,6 +914,7 @@
             renderCategoryFilterButtons();
             updateDashboard();
             renderItinerary();
+            if (ensureSyncCode()) pullFromServer();
         }
     </script>
 </body>
