@@ -209,7 +209,7 @@
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="fixed bottom-0 md:relative left-0 right-0 z-30 md:z-auto lg:col-span-1" onclick="showFormOnMobile(event)">
           <div
-            class="bg-white rounded-2xl shadow-sm border p-6 transition-all hover:shadow-md"
+            class="bg-slate-200 md:bg-white rounded-t-2xl md:rounded-t-2xl p-6 transition-all shadow-sm hover:shadow-md"
           >
             <h2
               class="text-lg font-bold md:mb-5 flex items-center gap-2 md:border-b md:pb-3 text-slate-700"
@@ -420,7 +420,7 @@
             </div>
 
             <!-- Category Pills Filter -->
-            <div class="border-t border-slate-100 pt-3">
+            <div class="hidden md:block border-t border-slate-100 pt-3">
               <span
                 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2"
                 >Lọc theo danh mục:</span
@@ -445,14 +445,14 @@
             <div class="flex gap-2">
               <button
                 onclick="expandAll()"
-                class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 px-2.5 py-1.5 rounded-xl transition-all shadow-sm"
+                class="text-[11px] font-bold text-slate-500 hover:text-slate-600 flex items-center gap-1 bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 px-2.5 py-1.5 rounded-xl transition-all shadow-sm"
               >
                 <i data-lucide="chevrons-down" class="w-3.5 h-3.5"></i>
                 <span class="hidden md:inline-block">Mở ra hết</span>
               </button>
               <button
                 onclick="collapseAll()"
-                class="text-[11px] font-bold text-slate-500 hover:text-slate-600 flex items-center gap-1 bg-white hover:bg-slate-50 border border-slate-200 px-2.5 py-1.5 rounded-xl transition-all shadow-sm"
+                class="text-[11px] font-bold text-slate-500 hover:text-slate-600 flex items-center gap-1 bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 px-2.5 py-1.5 rounded-xl transition-all shadow-sm"
               >
                 <i data-lucide="chevrons-up" class="w-3.5 h-3.5"></i>
 
@@ -790,7 +790,6 @@
           JSON.stringify(collapsedDates),
         );
         renderItinerary();
-        showToast("Đã thu gọn danh sách tất cả các ngày!", "info");
       }
 
       // Expand All Days in current schedule
@@ -801,7 +800,6 @@
           JSON.stringify(collapsedDates),
         );
         renderItinerary();
-        showToast("Đã mở rộng danh sách tất cả các ngày!", "success");
       }
 
       // Calculate and Update Dashboard Statistics
@@ -1006,7 +1004,7 @@
           const dateHeader = document.createElement("div");
           dateHeader.onclick = () => toggleCollapseDate(date);
           dateHeader.className =
-            "group flex justify-between items-center bg-white hover:bg-slate-50 border border-slate-100 rounded-2xl p-3.5 text-sm font-bold text-slate-700 cursor-pointer transition-all duration-150 select-none shadow-sm mb-2.5";
+            "group flex justify-between bg-slate-100 items-center hover:bg-slate-200 border border-slate-400 rounded-2xl p-3.5 text-sm font-bold text-slate-700 cursor-pointer transition-all duration-150 select-none shadow-sm mb-2.5";
           dateHeader.innerHTML = `
                     <div class="flex items-center gap-3">
                         <div class="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl group-hover:bg-indigo-100 transition-colors">
