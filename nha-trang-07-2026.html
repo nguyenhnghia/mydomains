@@ -54,7 +54,7 @@
     </header>
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+        <div class="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
             <!-- Progress Tracker -->
             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between transition-all hover:shadow-md">
                 <div class="flex justify-between items-start">
@@ -115,7 +115,7 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-1">
+            <div class="hidden md:block lg:col-span-1">
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 sticky top-24 transition-all hover:shadow-md">
                     <h2 class="text-lg font-bold mb-4 flex items-center gap-2 border-b pb-3 text-slate-700">
                         <i data-lucide="plus-circle" class="w-5 h-5 text-indigo-600"></i>
@@ -727,7 +727,7 @@
                                 ${budgetCostText}
                                 ${actualCostText}
                             </div>
-                            <div class="flex gap-1 bg-slate-50 p-1 rounded-xl border border-slate-100">
+                            <div class="hidden md:flex gap-1 bg-slate-50 p-1 rounded-xl border border-slate-100">
                                 <button onclick="editItem('${item.id}')" class="p-1.5 hover:bg-white rounded-lg text-slate-500 hover:text-indigo-600 transition-all shadow-sm hover:shadow" title="Sửa thông tin">
                                     <i data-lucide="edit-3" class="w-4 h-4"></i>
                                 </button>
