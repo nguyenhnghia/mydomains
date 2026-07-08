@@ -111,3 +111,25 @@ test('unsupported method returns 405 with Allow header', async () => {
     assert.strictEqual(res.statusCode, 405);
     assert.strictEqual(res.headers['Allow'], 'GET, PUT');
 });
+
+test('falls back to KV_REST_API_* env names (Vercel Storage-tab provisioning)', async () => {
+    const savedUrl = process.env.UPSTASH_REDIS_REST_URL;
+    const savedToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+    delete process.env.UPSTASH_REDIS_REST_URL;
+    delete process.env.UPSTASH_REDIS_REST_TOKEN;
+    process.env.KV_REST_API_URL = 'https://kv-named.upstash.io';
+    process.env.KV_REST_API_TOKEN = 'kv-token';
+    try {
+        stubFetch(null);
+        const res = mockRes();
+        await handler(mockReq(), res);
+        assert.strictEqual(res.statusCode, 200);
+        assert.strictEqual(fetchCalls[0].url, 'https://kv-named.upstash.io');
+        assert.strictEqual(fetchCalls[0].opts.headers.Authorization, 'Bearer kv-token');
+    } finally {
+        process.env.UPSTASH_REDIS_REST_URL = savedUrl;
+        process.env.UPSTASH_REDIS_REST_TOKEN = savedToken;
+        delete process.env.KV_REST_API_URL;
+        delete process.env.KV_REST_API_TOKEN;
+    }
+});

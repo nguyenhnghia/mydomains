@@ -1,10 +1,14 @@
 const KEY = 'nhatrang:doc';
 
 async function redis(command) {
-    const resp = await fetch(process.env.UPSTASH_REDIS_REST_URL, {
+    // Vercel's Storage tab provisions Upstash Redis under legacy KV_* names;
+    // the standalone Upstash integration uses UPSTASH_* names. Accept both.
+    const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+    const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
+    const resp = await fetch(url, {
         method: 'POST',
         headers: {
-            Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`,
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(command)

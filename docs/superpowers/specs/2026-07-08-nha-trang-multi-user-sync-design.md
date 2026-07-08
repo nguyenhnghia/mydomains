@@ -17,7 +17,7 @@
 - Repo remains static files at root. One new file: `api/trip.js` — Vercel auto-detects serverless functions in `api/`.
 - No npm dependencies and no `package.json`: the function calls Upstash's plain REST API with `fetch`.
 - Env vars:
-  - `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` — auto-injected by the Marketplace integration.
+  - `UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN` or `KV_REST_API_URL`/`KV_REST_API_TOKEN` — auto-injected by the integration; naming depends on how it was provisioned (standalone Upstash integration vs Vercel Storage tab). The function accepts both.
   - `TRIP_SECRET` — set manually by the user; the shared sync code.
 
 ## Data model
