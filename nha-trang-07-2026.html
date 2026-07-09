@@ -226,7 +226,7 @@
             <form
               id="schedule-form"
               onsubmit="handleFormSubmit(event)"
-              class="hidden md:block space-y-4 max-h-[70vh] overflow-y-auto md:max-h-none md:overflow-visible"
+              class="hidden md:block space-y-4 max-h-[calc(100vh_-_100px)] overflow-y-auto md:max-h-none md:overflow-visible"
             >
               <input type="hidden" id="edit-id" value="" />
 
@@ -394,25 +394,25 @@
                 />
               </div>
               <!-- Status Pills -->
-              <div class="flex gap-1 bg-slate-100 p-1 rounded-xl">
+              <div class="flex gap-1 bg-slate-100 p-1 rounded-xl [&>button]:grow">
                 <button
                   onclick="setFilter('all')"
                   id="filter-all"
-                  class="text-xs px-3 py-1.5 rounded-lg font-bold transition-all bg-white text-slate-800 shadow-sm"
+                  class="grow text-xs px-3 py-1.5 rounded-lg font-bold transition-all bg-white text-slate-800 shadow-sm"
                 >
                   Tất cả
                 </button>
                 <button
                   onclick="setFilter('pending')"
                   id="filter-pending"
-                  class="text-xs px-3 py-1.5 rounded-lg font-bold transition-all text-slate-600 hover:text-slate-800"
+                  class="grow text-xs px-3 py-1.5 rounded-lg font-bold transition-all text-slate-600 hover:text-slate-800"
                 >
                   Chưa làm
                 </button>
                 <button
                   onclick="setFilter('completed')"
                   id="filter-completed"
-                  class="text-xs px-3 py-1.5 rounded-lg font-bold transition-all text-slate-600 hover:text-slate-800"
+                  class="grow text-xs px-3 py-1.5 rounded-lg font-bold transition-all text-slate-600 hover:text-slate-800"
                 >
                   Đã làm
                 </button>
@@ -474,7 +474,7 @@
       class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"
     ></div>
 
-    <div
+    <!-- <div
       id="success-modal"
       class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden transition-all duration-300"
     >
@@ -498,7 +498,7 @@
           Đóng & Tiếp tục hành trình
         </button>
       </div>
-    </div>
+    </div> -->
 
     <script>
       // Default Rich Nha Trang Itinerary (4 Days 3 Nights)
@@ -816,15 +816,15 @@
         document.getElementById("progress-bar").style.width = `${progressPct}%`;
 
         // Trigger completion modal if 100% is met and itinerary has items
-        if (progressPct === 100 && total > 0) {
-          const wasAlerted = sessionStorage.getItem("completion_modal_shown");
-          if (!wasAlerted) {
-            document.getElementById("success-modal").classList.remove("hidden");
-            sessionStorage.setItem("completion_modal_shown", "true");
-          }
-        } else {
-          sessionStorage.removeItem("completion_modal_shown");
-        }
+        // if (progressPct === 100 && total > 0) {
+        //   const wasAlerted = sessionStorage.getItem("completion_modal_shown");
+        //   if (!wasAlerted) {
+        //     document.getElementById("success-modal").classList.remove("hidden");
+        //     sessionStorage.setItem("completion_modal_shown", "true");
+        //   }
+        // } else {
+        //   sessionStorage.removeItem("completion_modal_shown");
+        // }
 
         // Calculations
         const totalPlanned = itinerary.reduce(
@@ -1128,16 +1128,16 @@
           // Auto sync actual cost with budget cost if marked as completed and actual is zero
           if (item.completed && (!item.actual || item.actual === 0)) {
             item.actual = item.budget;
-            showToast(
-              `Đã ghi nhận hoàn thành! Đã sao chép chi phí dự toán ${formatVND(item.budget)} vào chi phí thực tế.`,
-              "success",
-            );
+            // showToast(
+            //   `Đã ghi nhận hoàn thành! Đã sao chép chi phí dự toán ${formatVND(item.budget)} vào chi phí thực tế.`,
+            //   "success",
+            // );
           } else if (!item.completed) {
             item.actual = 0; // Reset back to 0 if unchecked
-            showToast(
-              "Đã chuyển hoạt động về trạng thái chưa thực hiện.",
-              "info",
-            );
+            // showToast(
+            //   "Đã chuyển hoạt động về trạng thái chưa thực hiện.",
+            //   "info",
+            // );
           }
           saveToStorage();
         }
